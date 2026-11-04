@@ -1,65 +1,1219 @@
 
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#faf8f2"><meta name="apple-mobile-web-app-capable" content="yes"><title>FutariShopping</title><link rel="apple-touch-icon" sizes="180x180" href="./icon.png"><link rel="icon" type="image/png" href="./icon.png"><style>
-:root{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN',sans-serif;color:#203957;background:#faf8f2}*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer}header{height:78px;padding:22px 20px 14px;border-bottom:1px solid #e6e1d7;display:flex;justify-content:space-between;align-items:center}h1{font-size:23px;margin:0;letter-spacing:.05em}main{max-width:680px;margin:auto;padding:20px 17px 190px}.sub{color:#737985;font-size:13px}.chips{display:flex;gap:9px;overflow:auto;padding:8px 0 16px}.chip{white-space:nowrap;border:1.5px solid #9b9a91;background:white;color:#203957;padding:11px 17px;border-radius:30px}.chip.active{border-color:#203957;background:#203957;color:white}.section{font-size:13px;color:#747984;margin:16px 0 4px}.item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #e9e5dc;border-radius:14px;margin:9px 0;padding:13px}.item input{width:21px;height:21px;accent-color:#c65430}.item .name{font-weight:600;flex:1;min-width:0;overflow-wrap:anywhere}.done{text-decoration:line-through;opacity:.45}.tiny{font-size:12px;color:#81858c;margin-top:4px}.delete{background:none;border:0;color:#92949a;font-size:20px;padding:6px}.empty{min-height:42vh;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:12px}.empty .apple{font-size:60px;color:#203957}.empty strong{font-size:19px}.empty p{font-size:13px;color:#777d87;line-height:1.7;margin:0}.actions{position:fixed;bottom:calc(74px + env(safe-area-inset-bottom));left:0;right:0;display:flex;justify-content:center;gap:8px;padding:12px 12px 8px;background:linear-gradient(transparent,#faf8f2 25%);z-index:5}.actions .action{min-width:0;flex:1;max-width:420px;font-size:clamp(12px,3.5vw,16px);white-space:nowrap;padding:13px 8px}.action{border:2px solid #c65430;background:white;color:#c65430;border-radius:50px;padding:15px 18px;font-weight:700}.action.primary{background:#c65430;color:white}.nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e4ddd2;display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:env(safe-area-inset-bottom)}.nav button{background:none;border:0;color:#78808b;padding:11px 3px 15px;font-size:12px}.nav button.active{color:#203957;font-weight:700}.nav .symbol{display:block;font-size:24px;margin-bottom:4px}.panel{background:#fff;border:1px solid #e8e1d7;border-radius:16px;padding:16px;margin-top:14px}.field{width:100%;border:1.5px solid #c7c5c0;border-radius:13px;padding:14px;margin:9px 0;color:#203957;background:white}.wide{width:100%;background:#c65430;color:#fff;border:0;border-radius:15px;padding:15px;font-weight:700;margin-top:9px}.outline{background:white;color:#203957;border:1px solid #9a9a91;border-radius:13px;padding:10px 14px}.row{display:flex;gap:8px;align-items:center}.row>*:first-child{flex:1;min-width:0}.notice{padding:11px;background:#fff0e9;border-radius:10px;color:#8b482f;font-size:13px;margin:12px 0}.modal{position:fixed;inset:0;background:#0006;display:flex;align-items:flex-end;justify-content:center;z-index:10}.sheet{width:100%;max-width:680px;max-height:90vh;overflow:auto;background:#fff;border-radius:28px 28px 0 0;padding:20px 18px calc(25px + env(safe-area-inset-bottom))}.sheet h2{margin:0 0 15px}.hidden{display:none!important}.pill{display:inline-block;background:#f8e8e2;padding:6px 12px;border-radius:20px;font-size:12px}.shopline{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #eee}.shopline span{flex:1}#status{font-size:12px;color:#8b654b;min-height:16px}button:disabled{opacity:.45}.qty{font-size:12px;font-weight:700;color:#c65430;white-space:nowrap}.category{font-size:11px;color:#75808a}.swipeable{touch-action:pan-y}.swipeable.swiping{transition:transform .15s}
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#faf8f2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>FutariShopping</title>
+<link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
+<link rel="icon" type="image/png" href="./icon.png">
+<style>
+:root{
+  font-family:-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN',sans-serif;
+  color:#203957;
+  background:#faf8f2;
+  --accent:#7ECBC8;
+  --accent-dark:#398F91;
+}
+*{box-sizing:border-box}
+body{margin:0}
+button,input,select{font:inherit}
+button{cursor:pointer}
+header{
+  height:78px;
+  padding:22px 20px 14px;
+  border-bottom:1px solid #e6e1d7;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+h1{font-size:23px;margin:0;letter-spacing:.05em}
+main{
+  max-width:680px;
+  margin:auto;
+  padding:12px 17px calc(190px + env(safe-area-inset-bottom));
+}
+.sub{color:#737985;font-size:13px}
+.chips{
+  display:flex;
+  gap:6px;
+  overflow:auto;
+  padding:2px 0 5px;
+}
+.chip{
+  white-space:nowrap;
+  border:1px solid #9b9a91;
+  background:white;
+  color:#203957;
+  padding:6px 11px;
+  border-radius:30px;
+  font-size:13px;
+}
+.chip.active{
+  border-color:#203957;
+  background:#203957;
+  color:white;
+}
+.section{
+  font-size:12px;
+  color:#747984;
+  margin:4px 0 2px;
+}
+.item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:#fff;
+  border:1px solid #e9e5dc;
+  border-radius:14px;
+  margin:9px 0;
+  padding:13px;
+}
+.item input[type="checkbox"]{
+  width:22px;
+  height:22px;
+  accent-color:var(--accent);
+  flex-shrink:0;
+}
+.item .name{
+  font-weight:600;
+  flex:1;
+  min-width:0;
+  overflow-wrap:anywhere;
+  font-size:16px;
+  line-height:1.4;
+}
+.done{text-decoration:line-through;opacity:.45}
+.tiny{
+  font-size:12px;
+  color:#81858c;
+  margin-top:4px;
+}
+.delete{
+  background:none;
+  border:0;
+  color:#92949a;
+  font-size:20px;
+  padding:6px;
+}
+.empty{
+  min-height:42vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  text-align:center;
+  gap:12px;
+}
+.empty strong{font-size:19px}
+.empty p{
+  font-size:13px;
+  color:#777d87;
+  line-height:1.7;
+  margin:0;
+}
+.actions{
+  position:fixed;
+  bottom:calc(74px + env(safe-area-inset-bottom));
+  left:0;
+  right:0;
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  padding:8px 16px 12px;
+  background:linear-gradient(to bottom,transparent,#faf8f2 20%);
+  z-index:5;
+}
+.actions .action{
+  min-width:0;
+  flex:1;
+  max-width:420px;
+  min-height:52px;
+  font-size:clamp(12px,3.5vw,16px);
+  white-space:nowrap;
+  padding:12px 18px;
+}
+.action{
+  border:2px solid var(--accent);
+  background:var(--accent);
+  color:#fff;
+  border-radius:50px;
+  padding:15px 18px;
+  font-weight:700;
+}
+.action.primary{
+  background:var(--accent);
+  color:#fff;
+}
+.nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:white;
+  border-top:1px solid #e4ddd2;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  padding-bottom:env(safe-area-inset-bottom);
+  z-index:6;
+}
+.nav button{
+  background:none;
+  border:0;
+  color:#78808b;
+  padding:10px 1px 13px;
+  font-size:11px;
+}
+.nav button.active{
+  color:#203957;
+  font-weight:700;
+}
+.nav .symbol{
+  display:block;
+  font-size:22px;
+  margin-bottom:4px;
+}
+.panel{
+  background:#fff;
+  border:1px solid #e8e1d7;
+  border-radius:16px;
+  padding:16px;
+  margin-top:14px;
+}
+.panel h3{margin-top:0}
+.field{
+  width:100%;
+  border:1.5px solid #c7c5c0;
+  border-radius:13px;
+  padding:14px;
+  margin:9px 0;
+  color:#203957;
+  background:white;
+}
+.wide{
+  width:100%;
+  background:var(--accent);
+  color:#fff;
+  border:0;
+  border-radius:15px;
+  padding:15px;
+  font-weight:700;
+  margin-top:9px;
+}
+.outline{
+  background:white;
+  color:#203957;
+  border:1px solid #9a9a91;
+  border-radius:13px;
+  padding:10px 14px;
+}
+.row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.row>*:first-child{flex:1;min-width:0}
+.notice{
+  padding:11px;
+  background:#e6f6f4;
+  border-radius:10px;
+  color:#276e71;
+  font-size:13px;
+  margin:12px 0;
+}
+.modal{
+  position:fixed;
+  inset:0;
+  background:#0006;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  z-index:10;
+}
+.sheet{
+  width:100%;
+  max-width:680px;
+  max-height:90vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:28px 28px 0 0;
+  padding:20px 18px calc(25px + env(safe-area-inset-bottom));
+}
+.sheet h2{margin:0 0 15px}
+.hidden{display:none!important}
+.pill{
+  display:inline-block;
+  background:#e6f6f4;
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:12px;
+}
+.shopline{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:11px 0;
+  border-bottom:1px solid #eee;
+}
+.shopline span{flex:1}
+#status{
+  font-size:12px;
+  color:#398F91;
+  min-height:16px;
+}
+button:disabled{opacity:.45}
+.qty{
+  font-size:12px;
+  font-weight:700;
+  color:var(--accent-dark);
+  white-space:nowrap;
+}
+.category{font-size:11px;color:#75808a}
+.swipeable{touch-action:pan-y}
+.swipeable.swiping{transition:transform .15s}
+.toolbar{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin:3px 0;
+}
+.toolbar select{
+  width:auto;
+  max-width:100%;
+  padding:7px 10px;
+}
+.mini{
+  font-size:12px;
+  padding:9px 12px;
+}
+.danger{color:#b34d35}
+.muted{color:#747984}
+.badge{
+  border-radius:15px;
+  background:#e6f6f4;
+  padding:4px 9px;
+  font-size:12px;
+}
+.item.dragging{opacity:.45}
+.item button{flex-shrink:0}
+.stack{display:grid;gap:10px}
+.stack .field{margin:0}
+.wrap{overflow-wrap:anywhere}
+.editable{cursor:pointer}
+.editable:active{opacity:.6}
 
-.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}.toolbar select{width:auto;max-width:100%;padding:10px}.mini{font-size:12px;padding:9px 12px}.danger{color:#b34d35}.muted{color:#747984}.badge{border-radius:15px;background:#f8e8e2;padding:4px 9px;font-size:12px}.item.dragging{opacity:.45}.item button{flex-shrink:0}.item .name{min-width:0}.stack{display:grid;gap:10px}.stack .field{margin:0}.wrap{overflow-wrap:anywhere}.actions{bottom:75px}.nav button{font-size:11px}.panel h3{margin-top:0}
-/* compact store filter and larger shopping cards */
-.section{margin:8px 0 2px;font-size:12px}.chips{gap:6px;padding:4px 0 8px}.chip{font-size:13px;padding:8px 12px;border-width:1px}.toolbar{margin-top:5px}.item{min-height:88px;padding:17px 14px;gap:10px}.item .name{font-size:17px;line-height:1.45}.item .tiny{font-size:12px}.editable{cursor:pointer}.editable:active{opacity:.6}.nav button{font-size:11px;padding:10px 1px 13px}.nav .symbol{font-size:22px}main{padding-top:12px}
-/* Compact shopping rows: approximately eight visible on a tall phone */
-#content .swipeable.item{min-height:57px;padding:7px 10px;margin:4px 0;border-radius:12px;gap:8px}
-#content .swipeable .name{font-size:15px;line-height:1.25}
-#content .swipeable .tiny{font-size:11px;margin-top:2px;line-height:1.2}
-#content .swipeable input[type=checkbox]{width:22px;height:22px;flex-shrink:0}
-#content .swipeable .outline.mini{padding:5px 9px;min-width:32px;min-height:34px;font-size:14px}
-#content .swipeable .delete{padding:4px;font-size:19px}
+/* 買い物リストをコンパクト表示 */
+#content .swipeable.item{
+  min-height:57px;
+  padding:7px 10px;
+  margin:4px 0;
+  border-radius:12px;
+  gap:8px;
+}
+#content .swipeable .name{
+  font-size:15px;
+  line-height:1.25;
+}
+#content .swipeable .tiny{
+  font-size:11px;
+  margin-top:2px;
+  line-height:1.2;
+}
+#content .swipeable .outline.mini{
+  padding:5px 9px;
+  min-width:32px;
+  min-height:34px;
+  font-size:14px;
+}
+#content .swipeable .delete{
+  padding:4px;
+  font-size:19px;
+}
 #content .swipeable .qty{font-size:11px}
-#content .toolbar{margin:3px 0}
-#content .toolbar select{padding:7px 10px}
 #content .sub{margin:8px 0}
-#content .chips{padding:2px 0 5px}
-#content .chip{padding:6px 11px}
-#content .section{margin:4px 0 2px}
-</style></head><body><header><h1 id="heading">買い物リスト</h1><span id="status">接続中…</span></header><main><div id="content"></div></main><div class="actions" id="actions"><button class="action primary" id="addBtn">✎ 入力して追加</button></div><nav class="nav"><button data-tab="regular"><span class="symbol">⇄</span>定期購入品</button><button data-tab="list" class="active"><span class="symbol">▤</span>買い物リスト</button><button data-tab="history"><span class="symbol">◷</span>購入履歴</button><button data-tab="profile"><span class="symbol">♙</span>マイページ</button></nav><div id="modal" class="modal hidden"><div class="sheet" id="sheet"></div></div><script type="module">
-import{initializeApp}from'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
-import{getAuth,signInAnonymously,onAuthStateChanged,EmailAuthProvider,linkWithCredential,signInWithEmailAndPassword,signOut}from'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
-import{getFirestore,collection,addDoc,doc,setDoc,getDoc,getDocs,updateDoc,deleteDoc,onSnapshot,serverTimestamp,writeBatch}from'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
-const config={apiKey:'AIzaSyC2hJ4XrL80cW44Fe1Af5PiccARExSmm1c',authDomain:'futarishopping.firebaseapp.com',projectId:'futarishopping',storageBucket:'futarishopping.firebasestorage.app',messagingSenderId:'853354194520',appId:'1:853354194520:web:aa0e48c226a05e21dd4c2d'};
-const app=initializeApp(config),auth=getAuth(app),db=getFirestore(app);
-const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const defaults=['Amazon','スーパー','薬局','コーナン'];
-let uid=null,tab='list',selected='すべて',sortMode='manual',shops=[],items=[],history=[],houseId=null,house=null,requests=[],members=[],unsubs=[],busy=false,ready=false,requestsWatching=false;
 
-const msg=s=>{$('status').textContent=s};const ownItems=()=>collection(db,'users',uid,'items'),ownShops=()=>collection(db,'users',uid,'shops');
-const itemsRef=()=>houseId?collection(db,'households',houseId,'items'):ownItems();const shopsRef=()=>houseId?collection(db,'households',houseId,'shops'):ownShops();const histRef=()=>houseId?collection(db,'households',houseId,'history'):collection(db,'users',uid,'history');
-const clean=()=>{unsubs.forEach(f=>f());unsubs=[]};const watch=(r,cb)=>unsubs.push(onSnapshot(r,cb,e=>msg('同期エラー：'+e.code)));
-const close=()=>{$('modal').classList.add('hidden')};const open=s=>{$('sheet').innerHTML=s;$('modal').classList.remove('hidden')};
-const stamp=x=>x?.toDate?.()|| (x?.seconds?new Date(x.seconds*1000):null);
-const dateText=x=>{let d=stamp(x);return d?d.toLocaleDateString('ja-JP'):'未記録'};
-const remain=x=>{let d=stamp(x.lastPurchasedAt)||stamp(x.createdAt);if(!d||!x.cycle)return '周期未設定';let next=new Date(d);next.setDate(next.getDate()+Number(x.cycle));let n=Math.ceil((next-new Date())/86400000);return n<0?`${Math.abs(n)}日超過`:n===0?'今日が購入予定日':`あと${n}日`};
-const categoryOf=name=>{const rules=[['野菜・果物',/野菜|キャベツ|レタス|トマト|玉ねぎ|たまねぎ|にんじん|人参|じゃがいも|きゅうり|りんご|バナナ|みかん|果物|ブロッコリー|きのこ|大根/],['肉類',/肉|鶏|豚|牛肉|ベーコン|ハム|ソーセージ|ウインナー/],['魚介類',/魚|鮭|サーモン|まぐろ|マグロ|えび|エビ|いか|イカ|刺身|しらす/],['乳製品・卵',/牛乳|ミルク|チーズ|ヨーグルト|バター|卵|たまご/],['主食',/米|ごはん|パン|パスタ|麺|うどん|そば|ラーメン|小麦粉/],['飲料',/水|お茶|コーヒー|ジュース|炭酸|紅茶/],['日用品',/洗剤|柔軟剤|ティッシュ|トイレット|シャンプー|石鹸|せっけん|歯磨き|ゴミ袋|スポンジ/],['ペット用品',/猫|ねこ|キャット|ペット|砂|ちゅーる/]];return rules.find(([_,r])=>r.test(name))?.[0]||'その他'};
-const qty=x=>Number.isInteger(x.quantity)&&x.quantity>=1?x.quantity:1;
-const due=x=>{let d=stamp(x.lastPurchasedAt)||stamp(x.createdAt);return d&&x.cycle?d.getTime()+Number(x.cycle)*86400000:Number.POSITIVE_INFINITY};
-function bindSwipes(){document.querySelectorAll('.swipeable').forEach(el=>{let sx=0,sy=0,dx=0;el.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;dx=0},{passive:true});el.addEventListener('touchmove',e=>{dx=e.touches[0].clientX-sx;let dy=e.touches[0].clientY-sy;if(Math.abs(dx)>15&&Math.abs(dx)>Math.abs(dy)*1.5)el.style.transform=`translateX(${Math.max(-65,Math.min(65,dx))}px)`},{passive:true});el.addEventListener('touchend',async e=>{el.style.transform='';let dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)<85||Math.abs(dx)<Math.abs(dy)*1.5)return;const id=el.dataset.swipe;if(dx<0){if(confirm('この商品を削除しますか？'))try{await deleteDoc(doc(itemsRef(),id))}catch(err){alert(err.message)}}else{let x=items.find(v=>v.id===id);if(x)try{await updateDoc(doc(itemsRef(),id),{done:!x.done,updatedAt:serverTimestamp()})}catch(err){alert(err.message)}}},{passive:true})})}
+/* iPhone下部の安全領域 */
+@supports (padding:env(safe-area-inset-bottom)){
+  .actions{
+    bottom:calc(74px + env(safe-area-inset-bottom));
+  }
+  .nav{
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="heading">買い物リスト</h1>
+  <span id="status">接続中…</span>
+</header>
+<main>
+  <div id="content"></div>
+</main>
+<div class="actions" id="actions">
+  <button class="action primary" id="addBtn">✎ 入力して追加</button>
+</div>
+<nav class="nav">
+  <button data-tab="regular">
+    <span class="symbol">⇄</span>定期購入品
+  </button>
+  <button data-tab="list" class="active">
+    <span class="symbol">▤</span>買い物リスト
+  </button>
+  <button data-tab="history">
+    <span class="symbol">◷</span>購入履歴
+  </button>
+  <button data-tab="profile">
+    <span class="symbol">♙</span>マイページ
+  </button>
+</nav>
+<div id="modal" class="modal hidden">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<script type="module">
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
+import {getAuth,signInAnonymously,onAuthStateChanged,EmailAuthProvider,linkWithCredential,signInWithEmailAndPassword} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
+import {getFirestore,collection,addDoc,doc,setDoc,getDoc,getDocs,updateDoc,deleteDoc,onSnapshot,serverTimestamp,writeBatch} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
+
+const config={
+  apiKey:'AIzaSyC2hJ4XrL80cW44Fe1Af5PiccARExSmm1c',
+  authDomain:'futarishopping.firebaseapp.com',
+  projectId:'futarishopping',
+  storageBucket:'futarishopping.firebasestorage.app',
+  messagingSenderId:'853354194520',
+  appId:'1:853354194520:web:aa0e48c226a05e21dd4c2d'
+};
+
+const app=initializeApp(config);
+const auth=getAuth(app);
+const db=getFirestore(app);
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
+  '&':'&amp;',
+  '<':'&lt;',
+  '>':'&gt;',
+  '"':'&quot;',
+  "'":'&#39;'
+}[c]));
+
+const defaults=['Amazon','スーパー','薬局','コーナン'];
+
+let uid=null;
+let tab='list';
+let selected='すべて';
+let sortMode='manual';
+let shops=[];
+let items=[];
+let history=[];
+let houseId=null;
+let house=null;
+let requests=[];
+let members=[];
+let unsubs=[];
+let busy=false;
+let ready=false;
+let requestsWatching=false;
+
+const msg=s=>{$('status').textContent=s};
+
+const ownItems=()=>collection(db,'users',uid,'items');
+const ownShops=()=>collection(db,'users',uid,'shops');
+
+const itemsRef=()=>houseId
+  ?collection(db,'households',houseId,'items')
+  :ownItems();
+
+const shopsRef=()=>houseId
+  ?collection(db,'households',houseId,'shops')
+  :ownShops();
+
+const histRef=()=>houseId
+  ?collection(db,'households',houseId,'history')
+  :collection(db,'users',uid,'history');
+
+const clean=()=>{
+  unsubs.forEach(f=>f());
+  unsubs=[];
+};
+
+const watch=(r,cb)=>{
+  unsubs.push(onSnapshot(r,cb,e=>msg('同期エラー：'+e.code)));
+};
+
+const close=()=>{
+  $('modal').classList.add('hidden');
+};
+
+const open=s=>{
+  $('sheet').innerHTML=s;
+  $('modal').classList.remove('hidden');
+};
+
+const stamp=x=>x?.toDate?.()||
+  (x?.seconds?new Date(x.seconds*1000):null);
+
+const dateText=x=>{
+  let d=stamp(x);
+  return d?d.toLocaleDateString('ja-JP'):'未記録';
+};
+
+const remain=x=>{
+  let d=stamp(x.lastPurchasedAt)||stamp(x.createdAt);
+  if(!d||!x.cycle)return '周期未設定';
+
+  let next=new Date(d);
+  next.setDate(next.getDate()+Number(x.cycle));
+
+  let n=Math.ceil((next-new Date())/86400000);
+
+  return n<0
+    ?`${Math.abs(n)}日超過`
+    :n===0
+      ?'今日が購入予定日'
+      :`あと${n}日`;
+};
+
+const categoryOf=name=>{
+  const rules=[
+    ['野菜・果物',/野菜|キャベツ|レタス|トマト|玉ねぎ|たまねぎ|にんじん|人参|じゃがいも|きゅうり|りんご|バナナ|みかん|果物|ブロッコリー|きのこ|大根/],
+    ['肉類',/肉|鶏|豚|牛肉|ベーコン|ハム|ソーセージ|ウインナー/],
+    ['魚介類',/魚|鮭|サーモン|まぐろ|マグロ|えび|エビ|いか|イカ|刺身|しらす/],
+    ['乳製品・卵',/牛乳|ミルク|チーズ|ヨーグルト|バター|卵|たまご/],
+    ['主食',/米|ごはん|パン|パスタ|麺|うどん|そば|ラーメン|小麦粉/],
+    ['飲料',/水|お茶|コーヒー|ジュース|炭酸|紅茶/],
+    ['日用品',/洗剤|柔軟剤|ティッシュ|トイレット|シャンプー|石鹸|せっけん|歯磨き|ゴミ袋|スポンジ/],
+    ['ペット用品',/猫|ねこ|キャット|ペット|砂|ちゅーる/]
+  ];
+  return rules.find(([_,r])=>r.test(name))?.[0]||'その他';
+};
+
+const qty=x=>
+  Number.isInteger(x.quantity)&&x.quantity>=1
+    ?x.quantity:1;
+
+const due=x=>{
+  let d=stamp(x.lastPurchasedAt)||stamp(x.createdAt);
+  return d&&x.cycle
+    ?d.getTime()+Number(x.cycle)*86400000
+    :Number.POSITIVE_INFINITY;
+};
+
+/* 購入先の保存済み順序を使用 */
 const uniqueShops=()=>{
   const saved=shops
     .filter(s=>s.name)
     .sort((a,b)=>(a.order??999999)-(b.order??999999))
     .map(s=>s.name);
+
   return [...new Set([...saved,...defaults])];
 };
-function sorted(list){let a=[...list];if(sortMode==='shop')a.sort((x,y)=>String(x.shop).localeCompare(String(y.shop),'ja')||String(x.name).localeCompare(String(y.name),'ja'));else if(sortMode==='new')a.sort((x,y)=>(y.createdAt?.seconds||0)-(x.createdAt?.seconds||0));else a.sort((x,y)=>(x.order??(x.createdAt?.seconds||0)*1000)-(y.order??(y.createdAt?.seconds||0)*1000));return a}
-function render(){document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));$('heading').textContent={list:'買い物リスト',regular:'定期購入品',profile:'マイページ',history:'購入履歴'}[tab];$('actions').classList.toggle('hidden',tab!=='list'||!uid);if(!uid){$('content').innerHTML='<div class="panel">接続中…</div>';return}if(tab==='profile')return profile();if(tab==='history')return historyView();if(tab==='regular')return regularView();return listView()}
-function regularView(){let a=items.filter(x=>x.regular).sort((a,b)=>due(a)-due(b));$('content').innerHTML=`<p class="sub">購入日を記録すると、次の購入予定日を計算します。未記録の商品は登録日を仮の起点にします。</p><button class="wide" id="addRegular">＋ 定期購入品を登録</button>${a.map(x=>`<div class="item"><div class="name editable" role="button" tabindex="0" data-edit="${x.id}">${esc(x.name)} <span class="qty">×${qty(x)}</span><div class="tiny">${esc(categoryOf(x.name))} · ${esc(x.shop||'未設定')} · ${x.cycle?esc(x.cycle)+'日周期':'周期未設定'}</div><div class="tiny">${esc(remain(x))} · 最終購入 ${dateText(x.lastPurchasedAt)}</div></div><button class="outline mini" data-to-list="${x.id}">リストへ</button><button class="outline mini" data-bought="${x.id}">購入済</button><button class="delete" data-del="${x.id}">×</button></div>`).join('')||'<div class="empty">定期購入品はまだありません</div>'}`;$('addRegular').onclick=()=>addModal(true);bindItems()}
-function listView(){let a=sorted(items.filter(x=>!x.regular&&(selected==='すべて'||x.shop===selected)));$('content').innerHTML=`<div class="section">${houseId?'🏠 共有中':'📱 個人データ'}</div><div class="chips">${['すべて',...uniqueShops()].map(s=>`<button class="chip ${selected===s?'active':''}" data-filter="${esc(s)}">${esc(s)}</button>`).join('')}</div><div class="toolbar"><select class="field" id="sortMode"><option value="manual">手動順</option><option value="shop">購入先順</option><option value="new">新しい順</option></select></div><p class="sub">未購入 ${a.filter(x=>!x.done).length}件 / 購入済 ${a.filter(x=>x.done).length}件${sortMode==='manual'?' · ↑↓で並び替え':''}</p>${a.map(x=>`<div class="item swipeable" data-swipe="${x.id}"><input type="checkbox" data-check="${x.id}" ${x.done?'checked':''}><div class="name editable ${x.done?'done':''}" role="button" tabindex="0" data-edit="${x.id}">${esc(x.name)} <span class="qty">×${qty(x)}</span><div class="tiny">${esc(categoryOf(x.name))} · ${esc(x.shop||'未設定')}${x.memo?' · '+esc(x.memo):''}</div></div>${sortMode==='manual'?`<button class="outline mini" data-move="${x.id}" data-dir="-1">↑</button><button class="outline mini" data-move="${x.id}" data-dir="1">↓</button>`:''}<button class="delete" data-del="${x.id}">×</button></div>`).join('')||'<div class="empty"><strong>今回買う物を入れましょう</strong></div>'}<button class="wide" id="finishShopping" ${a.some(x=>x.done)?'':'disabled'}>✓ チェック済みを購入完了・履歴に保存</button>`;document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{selected=b.dataset.filter;render()});$('sortMode').value=sortMode;$('sortMode').onchange=e=>{sortMode=e.target.value;render()};$('finishShopping').onclick=finishShopping;document.querySelectorAll('[data-move]').forEach(b=>b.onclick=()=>moveItem(b.dataset.move,Number(b.dataset.dir)));bindItems();bindSwipes()}
-function bindItems(){document.querySelectorAll('[data-edit]').forEach(el=>{el.onclick=()=>editItem(el.dataset.edit);el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();editItem(el.dataset.edit)}}});document.querySelectorAll('[data-check]').forEach(el=>el.onchange=async()=>{try{await updateDoc(doc(itemsRef(),el.dataset.check),{done:el.checked,updatedAt:serverTimestamp()})}catch(e){alert(e.message)}});document.querySelectorAll('[data-del]').forEach(el=>el.onclick=async()=>{if(confirm('この商品を削除しますか？'))try{await deleteDoc(doc(itemsRef(),el.dataset.del))}catch(e){alert(e.message)}});document.querySelectorAll('[data-to-list]').forEach(el=>el.onclick=async()=>{let x=items.find(i=>i.id===el.dataset.toList);if(!x)return;try{await addDoc(itemsRef(),{name:x.name,shop:x.shop||'未設定',memo:'',done:false,regular:false,cycle:null,quantity:qty(x),sourceRegularId:x.id,order:Date.now(),createdAt:serverTimestamp()});tab='list';render()}catch(e){alert(e.message)}});document.querySelectorAll('[data-bought]').forEach(el=>el.onclick=async()=>{if(!confirm('今日購入した日として記録しますか？'))return;try{await updateDoc(doc(itemsRef(),el.dataset.bought),{lastPurchasedAt:serverTimestamp(),updatedAt:serverTimestamp()})}catch(e){alert(e.message)}})}
-async function moveItem(id,dir){let a=sorted(items.filter(x=>!x.regular&&(selected==='すべて'||x.shop===selected)));let i=a.findIndex(x=>x.id===id),j=i+dir;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];try{let batch=writeBatch(db);a.forEach((x,k)=>batch.update(doc(itemsRef(),x.id),{order:k+1,updatedAt:serverTimestamp()}));await batch.commit()}catch(e){alert(e.message)}}
-async function finishShopping(){let done=items.filter(x=>!x.regular&&x.done);if(!done.length)return;if(!confirm(`${done.length}件を購入履歴に記録してリストから外しますか？`))return;try{let batch=writeBatch(db);for(let x of done){let h=doc(histRef());batch.set(h,{name:x.name,shop:x.shop||'未設定',memo:x.memo||'',quantity:qty(x),purchasedAt:serverTimestamp(),sourceRegularId:x.sourceRegularId||'',byUid:uid});batch.delete(doc(itemsRef(),x.id));if(x.sourceRegularId&&items.some(r=>r.id===x.sourceRegularId&&r.regular))batch.update(doc(itemsRef(),x.sourceRegularId),{lastPurchasedAt:serverTimestamp(),updatedAt:serverTimestamp()})}await batch.commit();alert('購入履歴に保存しました')}catch(e){alert('購入完了に失敗：'+e.message)}} 
-function historyGroups(){const groups=new Map();for(const x of [...history].sort((a,b)=>(b.purchasedAt?.seconds||0)-(a.purchasedAt?.seconds||0))){const key=String(x.name||'').trim().normalize('NFKC').toLowerCase()+'\u0000'+String(x.shop||'未設定').trim().normalize('NFKC').toLowerCase();if(groups.has(key))groups.get(key).count++;else groups.set(key,{...x,count:1});}return [...groups.values()]}
-function historyView(){let a=historyGroups();$('content').innerHTML=`<p class="sub">同じ商品・購入先の履歴はまとめて表示。過去の購入記録は残ります。</p><p class="sub" id="againNotice" aria-live="polite"></p>${a.map(x=>`<div class="item"><div class="name">${esc(x.name)} <span class="qty">×${qty(x)}</span>${x.count>1?` <span class="badge">購入${x.count}回</span>`:''}<div class="tiny">${esc(x.shop||'未設定')} · 最終購入 ${dateText(x.purchasedAt)}</div></div><button class="outline mini" data-again="${x.id}">再追加</button></div>`).join('')||'<div class="empty"><strong>購入履歴はまだありません</strong></div>'}`;bindHistoryAgain(false)}
-function bindHistoryAgain(closeAfter=true){document.querySelectorAll('[data-again]').forEach(b=>b.onclick=async()=>{let x=history.find(v=>v.id===b.dataset.again);if(!x)return;const exists=items.some(i=>!i.regular&&String(i.name||'').trim().normalize('NFKC').toLowerCase()===String(x.name||'').trim().normalize('NFKC').toLowerCase()&&String(i.shop||'未設定').trim().normalize('NFKC').toLowerCase()===String(x.shop||'未設定').trim().normalize('NFKC').toLowerCase());if(exists){let n=$('againNotice');if(n)n.textContent=`「${x.name}」はすでに買い物リストにあります`;else alert('すでに買い物リストにあります');return}b.disabled=true;try{await addDoc(itemsRef(),{name:x.name,shop:x.shop||'未設定',memo:x.memo||'',done:false,regular:false,cycle:null,quantity:qty(x),order:Date.now(),createdAt:serverTimestamp()});if(closeAfter){close();}else{let n=$('againNotice');if(n)n.textContent=`「${x.name}」を買い物リストに追加しました`;b.textContent='追加済み';} }catch(e){alert(e.message);b.disabled=false}})}
-function editItem(id){let x=items.find(v=>v.id===id);if(!x)return;open(`<div class="row"><h2>商品を編集</h2><button class="outline" id="closeModal">閉じる</button></div><label>購入先</label><select class="field" id="editShop">${[...new Set(['未設定',...uniqueShops(),x.shop||'未設定'])].map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}</select><label>商品名</label><input class="field" id="editName" maxlength="100"><label>メモ</label><input class="field" id="editMemo" maxlength="200"><label>数量</label><input class="field" type="number" id="editQty" min="1" max="9999" value="1">${x.regular?'<label>購入周期（日）</label><input class="field" type="number" id="editCycle" min="1" max="3650">':''}<button class="wide" id="saveEdit">変更を保存</button>`);$('closeModal').onclick=close;$('editShop').value=x.shop||'未設定';$('editName').value=x.name;$('editMemo').value=x.memo||'';$('editQty').value=qty(x);if(x.regular)$('editCycle').value=x.cycle??'';$('saveEdit').onclick=async()=>{let name=$('editName').value.trim(),shop=$('editShop').value,memo=$('editMemo').value.trim();let quantity=Number($('editQty').value);if(!Number.isInteger(quantity)||quantity<1||quantity>9999)return alert('数量は1〜9999で入力してね');let cycle=x.regular?(Number($('editCycle').value)||null):null;if(!name)return alert('商品名を入力してね');if(cycle!==null&&(!Number.isInteger(cycle)||cycle<1||cycle>3650))return alert('周期は1〜3650日');$('saveEdit').disabled=true;try{await updateDoc(doc(itemsRef(),id),{name,shop,memo,cycle,quantity,updatedAt:serverTimestamp()});close()}catch(e){alert('編集できませんでした：'+e.message)}finally{$('saveEdit')?.removeAttribute('disabled')}}}
-function historyModal(){open(`<div class="row"><h2>購入履歴</h2><button class="outline" id="closeModal">閉じる</button></div>${history.map(x=>`<div class="item"><div class="name">${esc(x.name)}<div class="tiny">${esc(x.shop)} · ${dateText(x.purchasedAt)}</div></div><button class="outline mini" data-again="${x.id}">再追加</button></div>`).join('')||'<p class="sub">まだ購入履歴がありません</p>'}`);$('closeModal').onclick=close;document.querySelectorAll('[data-again]').forEach(b=>b.onclick=async()=>{let x=history.find(v=>v.id===b.dataset.again);try{await addDoc(itemsRef(),{name:x.name,shop:x.shop||'未設定',memo:x.memo||'',done:false,regular:false,cycle:null,quantity:qty(x),order:Date.now(),createdAt:serverTimestamp()});close();tab='list';render()}catch(e){alert(e.message)}})}
-function addModal(regular=false){open(`<div class="row"><h2>${regular?'定期購入品を登録':'入力して追加'}</h2><button class="outline" id="closeModal">閉じる</button></div><label>購入先</label><select class="field" id="newShop">${['未設定',...uniqueShops()].map(s=>`<option>${esc(s)}</option>`).join('')}</select><button class="outline" id="shopManage">＋ 購入先を追加</button><label>商品名</label><input class="field" id="newName" maxlength="100" placeholder="例：牛乳"><label>メモ（任意）</label><input class="field" id="newMemo" maxlength="200"><label>数量</label><input class="field" type="number" id="newQty" min="1" max="9999" value="1">${regular?'<label>購入周期（日）</label><input class="field" id="newCycle" type="number" min="1" max="3650" placeholder="例：60">':''}<button class="wide" id="saveItem">追加する</button>`);$('closeModal').onclick=close;$('shopManage').onclick=()=>shopModal(true,regular);$('saveItem').onclick=async()=>{let name=$('newName').value.trim(),shop=$('newShop').value,memo=$('newMemo').value.trim(),cycle=regular?(Number($('newCycle').value)||null):null,quantity=Number($('newQty').value);if(!Number.isInteger(quantity)||quantity<1||quantity>9999)return alert('数量は1〜9999で入力してね');if(!name)return alert('商品名を入力してね');if(cycle!==null&&(cycle<1||cycle>3650||!Number.isInteger(cycle)))return alert('周期は1〜3650日の整数にしてね');if(busy)return;busy=true;$('saveItem').disabled=true;try{await addDoc(itemsRef(),{name,shop,memo,done:false,regular,cycle,quantity,order:Date.now(),createdAt:serverTimestamp()});close()}catch(e){alert('保存できませんでした：'+e.message)}finally{busy=false}}}
+
+/* 左スワイプ削除・右スワイプチェック */
+function bindSwipes(){
+  document.querySelectorAll('.swipeable').forEach(el=>{
+    let sx=0,sy=0,dx=0;
+
+    el.addEventListener('touchstart',e=>{
+      sx=e.touches[0].clientX;
+      sy=e.touches[0].clientY;
+      dx=0;
+    },{passive:true});
+
+    el.addEventListener('touchmove',e=>{
+      dx=e.touches[0].clientX-sx;
+      let dy=e.touches[0].clientY-sy;
+
+      if(Math.abs(dx)>15&&Math.abs(dx)>Math.abs(dy)*1.5){
+        el.style.transform=`translateX(${Math.max(-65,Math.min(65,dx))}px)`;
+      }
+    },{passive:true});
+
+    el.addEventListener('touchend',async e=>{
+      el.style.transform='';
+      let dy=e.changedTouches[0].clientY-sy;
+
+      if(Math.abs(dx)<85||Math.abs(dx)<Math.abs(dy)*1.5)return;
+
+      const id=el.dataset.swipe;
+
+      if(dx<0){
+        if(confirm('この商品を削除しますか？')){
+          try{
+            await deleteDoc(doc(itemsRef(),id));
+          }catch(err){alert(err.message)}
+        }
+      }else{
+        let x=items.find(v=>v.id===id);
+        if(x){
+          try{
+            await updateDoc(doc(itemsRef(),id),{
+              done:!x.done,
+              updatedAt:serverTimestamp()
+            });
+          }catch(err){alert(err.message)}
+        }
+      }
+    },{passive:true});
+  });
+}
+
+/* 商品の並び替え */
+function sorted(list){
+  let a=[...list];
+
+  if(sortMode==='shop'){
+    const order=uniqueShops();
+    a.sort((x,y)=>
+      order.indexOf(x.shop)-order.indexOf(y.shop)||
+      String(x.name).localeCompare(String(y.name),'ja')
+    );
+  }else if(sortMode==='new'){
+    a.sort((x,y)=>
+      (y.createdAt?.seconds||0)-(x.createdAt?.seconds||0)
+    );
+  }else{
+    a.sort((x,y)=>
+      (x.order??(x.createdAt?.seconds||0)*1000)-
+      (y.order??(y.createdAt?.seconds||0)*1000)
+    );
+  }
+  return a;
+}
+
+function render(){
+  document.querySelectorAll('.nav button').forEach(b=>
+    b.classList.toggle('active',b.dataset.tab===tab)
+  );
+
+  $('heading').textContent={
+    list:'買い物リスト',
+    regular:'定期購入品',
+    profile:'マイページ',
+    history:'購入履歴'
+  }[tab];
+
+  $('actions').classList.toggle('hidden',tab!=='list'||!uid);
+
+  if(!uid){
+    $('content').innerHTML='<div class="panel">接続中…</div>';
+    return;
+  }
+
+  if(tab==='profile')return profile();
+  if(tab==='history')return historyView();
+  if(tab==='regular')return regularView();
+
+  return listView();
+}
+
+/* 定期購入品 */
+function regularView(){
+  let a=items.filter(x=>x.regular).sort((a,b)=>due(a)-due(b));
+
+  $('content').innerHTML=`
+    <p class="sub">
+      購入日を記録すると、次の購入予定日を計算します。
+    </p>
+
+    <button class="wide" id="addRegular">
+      ＋ 定期購入品を登録
+    </button>
+
+    ${a.map(x=>`
+      <div class="item">
+        <div class="name editable" role="button"
+          tabindex="0" data-edit="${x.id}">
+          ${esc(x.name)}
+          <span class="qty">×${qty(x)}</span>
+
+          <div class="tiny">
+            ${esc(categoryOf(x.name))} ·
+            ${esc(x.shop||'未設定')} ·
+            ${x.cycle?esc(x.cycle)+'日周期':'周期未設定'}
+          </div>
+
+          <div class="tiny">
+            ${esc(remain(x))} ·
+            最終購入 ${dateText(x.lastPurchasedAt)}
+          </div>
+        </div>
+
+        <button class="outline mini" data-to-list="${x.id}">
+          リストへ
+        </button>
+
+        <button class="outline mini" data-bought="${x.id}">
+          購入済
+        </button>
+
+        <button class="delete" data-del="${x.id}">×</button>
+      </div>
+    `).join('')||'<div class="empty">定期購入品はまだありません</div>'}
+  `;
+
+  $('addRegular').onclick=()=>addModal(true);
+  bindItems();
+}
+
+/* 買い物リスト */
+function listView(){
+  let a=sorted(items.filter(x=>
+    !x.regular&&(selected==='すべて'||x.shop===selected)
+  ));
+
+  $('content').innerHTML=`
+    <div class="section">
+      ${houseId?'🏠 共有中':'📱 個人データ'}
+    </div>
+
+    <div class="chips">
+      ${['すべて',...uniqueShops()].map(s=>`
+        <button class="chip ${selected===s?'active':''}"
+          data-filter="${esc(s)}">${esc(s)}</button>
+      `).join('')}
+    </div>
+
+    <div class="toolbar">
+      <select class="field" id="sortMode">
+        <option value="manual">手動順</option>
+        <option value="shop">購入先順</option>
+        <option value="new">新しい順</option>
+      </select>
+    </div>
+
+    <p class="sub">
+      未購入 ${a.filter(x=>!x.done).length}件 /
+      購入済 ${a.filter(x=>x.done).length}件
+      ${sortMode==='manual'?' · ↑↓で並び替え':''}
+    </p>
+
+    ${a.map(x=>`
+      <div class="item swipeable" data-swipe="${x.id}">
+        <input type="checkbox" data-check="${x.id}"
+          ${x.done?'checked':''}>
+
+        <div class="name editable ${x.done?'done':''}"
+          role="button" tabindex="0" data-edit="${x.id}">
+          ${esc(x.name)}
+          <span class="qty">×${qty(x)}</span>
+
+          <div class="tiny">
+            ${esc(categoryOf(x.name))} ·
+            ${esc(x.shop||'未設定')}
+            ${x.memo?' · '+esc(x.memo):''}
+          </div>
+        </div>
+
+        ${sortMode==='manual'?`
+          <button class="outline mini"
+            data-move="${x.id}" data-dir="-1">↑</button>
+          <button class="outline mini"
+            data-move="${x.id}" data-dir="1">↓</button>
+        `:''}
+
+        <button class="delete" data-del="${x.id}">×</button>
+      </div>
+    `).join('')||`
+      <div class="empty">
+        <strong>今回買う物を入れましょう</strong>
+      </div>
+    `}
+
+    <button class="wide" id="finishShopping"
+      ${a.some(x=>x.done)?'':'disabled'}>
+      ✓ チェック済みを購入完了・履歴に保存
+    </button>
+  `;
+
+  document.querySelectorAll('[data-filter]').forEach(b=>{
+    b.onclick=()=>{
+      selected=b.dataset.filter;
+      render();
+    };
+  });
+
+  $('sortMode').value=sortMode;
+
+  $('sortMode').onchange=e=>{
+    sortMode=e.target.value;
+    render();
+  };
+
+  $('finishShopping').onclick=finishShopping;
+
+  document.querySelectorAll('[data-move]').forEach(b=>{
+    b.onclick=()=>moveItem(b.dataset.move,Number(b.dataset.dir));
+  });
+
+  bindItems();
+  bindSwipes();
+}
+
+/* 商品の操作 */
+function bindItems(){
+  document.querySelectorAll('[data-edit]').forEach(el=>{
+    el.onclick=()=>editItem(el.dataset.edit);
+    el.onkeydown=e=>{
+      if(e.key==='Enter'||e.key===' '){
+        e.preventDefault();
+        editItem(el.dataset.edit);
+      }
+    };
+  });
+
+  document.querySelectorAll('[data-check]').forEach(el=>{
+    el.onchange=async()=>{
+      try{
+        await updateDoc(doc(itemsRef(),el.dataset.check),{
+          done:el.checked,
+          updatedAt:serverTimestamp()
+        });
+      }catch(e){alert(e.message)}
+    };
+  });
+
+  document.querySelectorAll('[data-del]').forEach(el=>{
+    el.onclick=async()=>{
+      if(confirm('この商品を削除しますか？')){
+        try{
+          await deleteDoc(doc(itemsRef(),el.dataset.del));
+        }catch(e){alert(e.message)}
+      }
+    };
+  });
+
+  document.querySelectorAll('[data-to-list]').forEach(el=>{
+    el.onclick=async()=>{
+      let x=items.find(i=>i.id===el.dataset.toList);
+      if(!x)return;
+
+      try{
+        await addDoc(itemsRef(),{
+          name:x.name,
+          shop:x.shop||'未設定',
+          memo:'',
+          done:false,
+          regular:false,
+          cycle:null,
+          quantity:qty(x),
+          sourceRegularId:x.id,
+          order:Date.now(),
+          createdAt:serverTimestamp()
+        });
+
+        tab='list';
+        render();
+      }catch(e){alert(e.message)}
+    };
+  });
+
+  document.querySelectorAll('[data-bought]').forEach(el=>{
+    el.onclick=async()=>{
+      if(!confirm('今日購入した日として記録しますか？'))return;
+
+      try{
+        await updateDoc(doc(itemsRef(),el.dataset.bought),{
+          lastPurchasedAt:serverTimestamp(),
+          updatedAt:serverTimestamp()
+        });
+      }catch(e){alert(e.message)}
+    };
+  });
+}
+
+/* 手動順の保存 */
+async function moveItem(id,dir){
+  let a=sorted(items.filter(x=>
+    !x.regular&&(selected==='すべて'||x.shop===selected)
+  ));
+
+  let i=a.findIndex(x=>x.id===id);
+  let j=i+dir;
+
+  if(j<0||j>=a.length)return;
+
+  [a[i],a[j]]=[a[j],a[i]];
+
+  try{
+    let batch=writeBatch(db);
+
+    a.forEach((x,k)=>{
+      batch.update(doc(itemsRef(),x.id),{
+        order:k+1,
+        updatedAt:serverTimestamp()
+      });
+    });
+
+    await batch.commit();
+  }catch(e){alert(e.message)}
+}
+
+/* 購入完了 */
+async function finishShopping(){
+  let done=items.filter(x=>!x.regular&&x.done);
+  if(!done.length)return;
+
+  if(!confirm(
+    `${done.length}件を購入履歴に記録してリストから外しますか？`
+  ))return;
+
+  try{
+    let batch=writeBatch(db);
+
+    for(let x of done){
+      let h=doc(histRef());
+
+      batch.set(h,{
+        name:x.name,
+        shop:x.shop||'未設定',
+        memo:x.memo||'',
+        quantity:qty(x),
+        purchasedAt:serverTimestamp(),
+        sourceRegularId:x.sourceRegularId||'',
+        byUid:uid
+      });
+
+      batch.delete(doc(itemsRef(),x.id));
+
+      if(
+        x.sourceRegularId&&
+        items.some(r=>r.id===x.sourceRegularId&&r.regular)
+      ){
+        batch.update(doc(itemsRef(),x.sourceRegularId),{
+          lastPurchasedAt:serverTimestamp(),
+          updatedAt:serverTimestamp()
+        });
+      }
+    }
+
+    await batch.commit();
+    alert('購入履歴に保存しました');
+  }catch(e){
+    alert('購入完了に失敗：'+e.message);
+  }
+}
+
+/* 購入履歴を商品名＋購入先でまとめる */
+function historyGroups(){
+  const groups=new Map();
+
+  for(const x of [...history].sort((a,b)=>
+    (b.purchasedAt?.seconds||0)-
+    (a.purchasedAt?.seconds||0)
+  )){
+    const key=
+      String(x.name||'').trim().normalize('NFKC').toLowerCase()+
+      '\u0000'+
+      String(x.shop||'未設定').trim().normalize('NFKC').toLowerCase();
+
+    if(groups.has(key)){
+      groups.get(key).count++;
+    }else{
+      groups.set(key,{...x,count:1});
+    }
+  }
+
+  return [...groups.values()];
+}
+
+/* 購入履歴画面 */
+function historyView(){
+  let a=historyGroups();
+
+  $('content').innerHTML=`
+    <p class="sub">
+      同じ商品・購入先の履歴はまとめて表示。
+      過去の購入記録は残ります。
+    </p>
+
+    <p class="sub" id="againNotice" aria-live="polite"></p>
+
+    ${a.map(x=>`
+      <div class="item">
+        <div class="name">
+          ${esc(x.name)}
+          <span class="qty">×${qty(x)}</span>
+
+          ${x.count>1?`
+            <span class="badge">購入${x.count}回</span>
+          `:''}
+
+          <div class="tiny">
+            ${esc(x.shop||'未設定')} ·
+            最終購入 ${dateText(x.purchasedAt)}
+          </div>
+        </div>
+
+        <button class="outline mini" data-again="${x.id}">
+          再追加
+        </button>
+      </div>
+    `).join('')||`
+      <div class="empty">
+        <strong>購入履歴はまだありません</strong>
+      </div>
+    `}
+  `;
+
+  bindHistoryAgain(false);
+}
+
+/* 履歴から再追加：重複防止・履歴画面を維持 */
+function bindHistoryAgain(closeAfter=true){
+  document.querySelectorAll('[data-again]').forEach(b=>{
+    b.onclick=async()=>{
+      let x=history.find(v=>v.id===b.dataset.again);
+      if(!x)return;
+
+      const norm=s=>
+        String(s||'').trim().normalize('NFKC').toLowerCase();
+
+      const exists=items.some(i=>
+        !i.regular&&
+        norm(i.name)===norm(x.name)&&
+        norm(i.shop||'未設定')===norm(x.shop||'未設定')
+      );
+
+      if(exists){
+        let n=$('againNotice');
+
+        if(n){
+          n.textContent=`「${x.name}」はすでに買い物リストにあります`;
+        }else{
+          alert('すでに買い物リストにあります');
+        }
+        return;
+      }
+
+      b.disabled=true;
+
+      try{
+        await addDoc(itemsRef(),{
+          name:x.name,
+          shop:x.shop||'未設定',
+          memo:x.memo||'',
+          done:false,
+          regular:false,
+          cycle:null,
+          quantity:qty(x),
+          order:Date.now(),
+          createdAt:serverTimestamp()
+        });
+
+        if(closeAfter){
+          close();
+        }else{
+          let n=$('againNotice');
+
+          if(n){
+            n.textContent=`「${x.name}」を買い物リストに追加しました`;
+          }
+
+          b.textContent='追加済み';
+        }
+      }catch(e){
+        alert(e.message);
+        b.disabled=false;
+      }
+    };
+  });
+}
+
+/* 商品編集 */
+function editItem(id){
+  let x=items.find(v=>v.id===id);
+  if(!x)return;
+
+  open(`
+    <div class="row">
+      <h2>商品を編集</h2>
+      <button class="outline" id="closeModal">閉じる</button>
+    </div>
+
+    <label>購入先</label>
+    <select class="field" id="editShop">
+      ${[...new Set([
+        '未設定',
+        ...uniqueShops(),
+        x.shop||'未設定'
+      ])].map(v=>`
+        <option value="${esc(v)}">${esc(v)}</option>
+      `).join('')}
+    </select>
+
+    <label>商品名</label>
+    <input class="field" id="editName" maxlength="100">
+
+    <label>メモ</label>
+    <input class="field" id="editMemo" maxlength="200">
+
+    <label>数量</label>
+    <input class="field" type="number"
+      id="editQty" min="1" max="9999" value="1">
+
+    ${x.regular?`
+      <label>購入周期（日）</label>
+      <input class="field" type="number"
+        id="editCycle" min="1" max="3650">
+    `:''}
+
+    <button class="wide" id="saveEdit">
+      変更を保存
+    </button>
+  `);
+
+  $('closeModal').onclick=close;
+  $('editShop').value=x.shop||'未設定';
+  $('editName').value=x.name;
+  $('editMemo').value=x.memo||'';
+  $('editQty').value=qty(x);
+
+  if(x.regular){
+    $('editCycle').value=x.cycle??'';
+  }
+
+  $('saveEdit').onclick=async()=>{
+    let name=$('editName').value.trim();
+    let shop=$('editShop').value;
+    let memo=$('editMemo').value.trim();
+    let quantity=Number($('editQty').value);
+    let cycle=x.regular
+      ?(Number($('editCycle').value)||null)
+      :null;
+
+    if(!name)return alert('商品名を入力してね');
+
+    if(!Number.isInteger(quantity)||quantity<1||quantity>9999){
+      return alert('数量は1〜9999で入力してね');
+    }
+
+    if(
+      cycle!==null&&
+      (!Number.isInteger(cycle)||cycle<1||cycle>3650)
+    ){
+      return alert('周期は1〜3650日');
+    }
+
+    $('saveEdit').disabled=true;
+
+    try{
+      await updateDoc(doc(itemsRef(),id),{
+        name,
+        shop,
+        memo,
+        cycle,
+        quantity,
+        updatedAt:serverTimestamp()
+      });
+
+      close();
+    }catch(e){
+      alert('編集できませんでした：'+e.message);
+      $('saveEdit')?.removeAttribute('disabled');
+    }
+  };
+}
+
+/* 商品追加 */
+function addModal(regular=false){
+  open(`
+    <div class="row">
+      <h2>${regular?'定期購入品を登録':'入力して追加'}</h2>
+      <button class="outline" id="closeModal">閉じる</button>
+    </div>
+
+    <label>購入先</label>
+    <select class="field" id="newShop">
+      ${['未設定',...uniqueShops()].map(s=>`
+        <option>${esc(s)}</option>
+      `).join('')}
+    </select>
+
+    <button class="outline" id="shopManage">
+      ＋ 購入先を追加
+    </button>
+
+    <label>商品名</label>
+    <input class="field" id="newName"
+      maxlength="100" placeholder="例：牛乳">
+
+    <label>メモ（任意）</label>
+    <input class="field" id="newMemo" maxlength="200">
+
+    <label>数量（通常は1のままでOK）</label>
+    <input class="field" type="number"
+      id="newQty" min="1" max="9999" value="1">
+
+    ${regular?`
+      <label>購入周期（日）</label>
+      <input class="field" id="newCycle"
+        type="number" min="1" max="3650"
+        placeholder="例：60">
+    `:''}
+
+    <button class="wide" id="saveItem">
+      追加する
+    </button>
+  `);
+
+  $('closeModal').onclick=close;
+  $('shopManage').onclick=()=>shopModal(true,regular);
+
+  $('saveItem').onclick=async()=>{
+    let name=$('newName').value.trim();
+    let shop=$('newShop').value;
+    let memo=$('newMemo').value.trim();
+    let quantity=Number($('newQty').value);
+    let cycle=regular
+      ?(Number($('newCycle').value)||null)
+      :null;
+
+    if(!name)return alert('商品名を入力してね');
+
+    if(!Number.isInteger(quantity)||quantity<1||quantity>9999){
+      return alert('数量は1〜9999で入力してね');
+    }
+
+    if(
+      cycle!==null&&
+      (!Number.isInteger(cycle)||cycle<1||cycle>3650)
+    ){
+      return alert('周期は1〜3650日の整数にしてね');
+    }
+
+    if(busy)return;
+    busy=true;
+    $('saveItem').disabled=true;
+
+    try{
+      await addDoc(itemsRef(),{
+        name,
+        shop,
+        memo,
+        done:false,
+        regular,
+        cycle,
+        quantity,
+        order:Date.now(),
+        createdAt:serverTimestamp()
+      });
+
+      close();
+    }catch(e){
+      alert('保存できませんでした：'+e.message);
+      $('saveItem').disabled=false;
+    }finally{
+      busy=false;
+    }
+  };
+}
+
+/* 購入先の管理・並び替え */
 function shopModal(fromAdd=false,regular=false){
   let names=uniqueShops();
 
@@ -69,7 +1223,9 @@ function shopModal(fromAdd=false,regular=false){
       <button class="outline" id="closeModal">閉じる</button>
     </div>
 
-    <p class="sub">↑ ↓ で購入先の表示順を変更できます。</p>
+    <p class="sub">
+      ↑ ↓ で購入先の表示順を変更できます。
+    </p>
 
     <div class="row">
       <input class="field" id="shopInput"
@@ -79,15 +1235,19 @@ function shopModal(fromAdd=false,regular=false){
 
     ${names.map((name,i)=>{
       const s=shops.find(x=>x.name===name);
+
       return `
         <div class="shopline">
           <span>${esc(name)}</span>
+
           <button class="outline mini"
             data-shop-move="${i}" data-dir="-1"
             ${i===0?'disabled':''}>↑</button>
+
           <button class="outline mini"
             data-shop-move="${i}" data-dir="1"
             ${i===names.length-1?'disabled':''}>↓</button>
+
           ${s?`
             <button class="outline mini"
               data-rename="${s.id}">変更</button>
@@ -104,31 +1264,41 @@ function shopModal(fromAdd=false,regular=false){
     if(fromAdd)addModal(regular);
   };
 
+  /* 購入先の追加 */
   $('saveShop').onclick=async()=>{
     let name=$('shopInput').value.trim();
+
     if(!name||names.includes(name)){
       alert('未入力または登録済みです');
       return;
     }
+
     try{
       await addDoc(shopsRef(),{
         name,
         order:names.length,
         createdAt:serverTimestamp()
       });
+
       shopModal(fromAdd,regular);
-    }catch(e){alert(e.message)}
+    }catch(e){
+      alert('購入先の追加に失敗：'+e.message);
+    }
   };
 
+  /* 購入先の上下移動 */
   document.querySelectorAll('[data-shop-move]').forEach(b=>{
     b.onclick=async()=>{
       let i=Number(b.dataset.shopMove);
       let j=i+Number(b.dataset.dir);
+
       if(j<0||j>=names.length)return;
 
       let reordered=[...names];
-      [reordered[i],reordered[j]]=
-        [reordered[j],reordered[i]];
+
+      [reordered[i],reordered[j]]=[
+        reordered[j],reordered[i]
+      ];
 
       b.disabled=true;
 
@@ -145,6 +1315,7 @@ function shopModal(fromAdd=false,regular=false){
             });
           }else{
             let ref=doc(shopsRef());
+
             batch.set(ref,{
               name:name,
               order:k,
@@ -152,6 +1323,7 @@ function shopModal(fromAdd=false,regular=false){
             });
           }
         }
+
         await batch.commit();
         shopModal(fromAdd,regular);
       }catch(e){
@@ -161,19 +1333,24 @@ function shopModal(fromAdd=false,regular=false){
     };
   });
 
+  /* 購入先の名前変更 */
   document.querySelectorAll('[data-rename]').forEach(b=>{
     b.onclick=async()=>{
       let s=shops.find(x=>x.id===b.dataset.rename);
       let name=prompt('新しい購入先',s.name)?.trim();
+
       if(!name||names.includes(name))return;
 
       try{
         await updateDoc(doc(shopsRef(),s.id),{name});
         shopModal(fromAdd,regular);
-      }catch(e){alert(e.message)}
+      }catch(e){
+        alert(e.message);
+      }
     };
   });
 
+  /* 購入先の削除 */
   document.querySelectorAll('[data-shop-del]').forEach(b=>{
     b.onclick=async()=>{
       if(!confirm('購入先を削除しますか？'))return;
@@ -181,21 +1358,708 @@ function shopModal(fromAdd=false,regular=false){
       try{
         await deleteDoc(doc(shopsRef(),b.dataset.shopDel));
         shopModal(fromAdd,regular);
-      }catch(e){alert(e.message)}
+      }catch(e){
+        alert(e.message);
+      }
     };
   });
 }
-function backup(){let obj={format:'FutariShopping-backup-v2',exportedAt:new Date().toISOString(),uid,houseId,shops,items,history};let data=JSON.stringify(obj,(k,v)=>v&&typeof v==='object'&&typeof v.toDate==='function'?{seconds:v.seconds,nanoseconds:v.nanoseconds}:v,2);let url=URL.createObjectURL(new Blob([data],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='FutariShopping-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
-function profile(){let user=auth.currentUser;let email=user?.email||'';$('content').innerHTML=`<div class="panel"><h3>データ保護</h3><p class="sub">${houseId?'🏠 共有グループで同期中':'📱 個人データで使用中'} · ${email?'メール認証済み':'匿名ログイン'}</p><p class="sub wrap">ユーザーID：${esc(uid)}</p><button class="wide" id="backup">JSONバックアップを保存</button><p class="notice">移行前に必ずバックアップを保存してください。古いホーム画面アイコンやSafariのサイトデータは、移行完了まで削除しないでください。</p></div><div class="panel"><h3>アカウント</h3>${email?`<p class="sub">${esc(email)}</p>`:`<p class="sub">メール・パスワードを紐付けると、同じユーザーIDを維持したまま復旧可能になります。</p><button class="wide" id="linkEmail">メールとパスワードを登録</button>`}<button class="outline" id="loginEmail">既存アカウントでログイン</button></div><div class="panel"><h3>2人で共有</h3>${houseId?`<p>共有グループID：<span class="wrap">${esc(houseId)}</span></p><p class="sub">参加者 ${members.length}人</p><button class="wide" id="invite">招待コードを表示・更新</button>${house?.ownerUid===uid?`<button class="outline" id="approve">参加申請 ${requests.length}件</button>`:''}`:`<p class="sub">共有グループを作成して既存データをコピーするか、招待コードから参加できます。</p><button class="wide" id="createHouse">共有グループを作成・移行</button><button class="outline" id="joinHouse">招待コードで参加申請</button><button class="outline" id="checkMember">共有を確認</button>`}</div><div class="panel"><h3>購入先の管理</h3><button class="wide" id="manageShops">購入先を追加・編集</button></div>`;$('backup').onclick=backup;$('manageShops').onclick=()=>shopModal();$('loginEmail').onclick=loginModal;if($('linkEmail'))$('linkEmail').onclick=linkModal;if($('createHouse'))$('createHouse').onclick=createHouse;if($('joinHouse'))$('joinHouse').onclick=joinModal;if($('checkMember'))$('checkMember').onclick=checkMembership;if($('invite'))$('invite').onclick=inviteModal;if($('approve'))$('approve').onclick=approveModal}
-function linkModal(){open(`<h2>アカウントを保護</h2><p class="notice">現在の匿名ユーザーにメールを紐付けます。新規ログインではありません。</p><input class="field" id="email" type="email" placeholder="メールアドレス"><input class="field" id="pass" type="password" placeholder="パスワード（6文字以上）"><button class="wide" id="doLink">登録する</button><button class="outline" id="cancel">閉じる</button>`);$('cancel').onclick=close;$('doLink').onclick=async()=>{try{let cred=EmailAuthProvider.credential($('email').value.trim(),$('pass').value);await linkWithCredential(auth.currentUser,cred);close();render();alert('アカウントを保護しました')}catch(e){alert('登録失敗：'+e.message)}}}
-function loginModal(){open(`<h2>既存アカウントでログイン</h2><p class="notice">ログインすると現在の匿名ユーザーから切り替わります。匿名データがある場合は先にバックアップ・メール紐付けしてください。</p><input class="field" id="email" type="email" placeholder="メールアドレス"><input class="field" id="pass" type="password" placeholder="パスワード"><button class="wide" id="doLogin">ログイン</button><button class="outline" id="cancel">閉じる</button>`);$('cancel').onclick=close;$('doLogin').onclick=async()=>{if(!confirm('現在のユーザーからログアウトして切り替えます。バックアップ済みですか？'))return;try{await signInWithEmailAndPassword(auth,$('email').value.trim(),$('pass').value);close()}catch(e){alert(e.message)}}}
-function code(){let b=new Uint8Array(16);crypto.getRandomValues(b);return Array.from(b,x=>x.toString(16).padStart(2,'0')).join('')}
-async function createHouse(){if(!auth.currentUser?.email)return alert('先にメール・パスワードを登録してください');if(!confirm('最初にJSONバックアップを保存しましたか？\n元データは削除せず、共有グループへコピーします。'))return;let hid=doc(collection(db,'households')).id;try{await setDoc(doc(db,'households',hid),{ownerUid:uid,createdAt:serverTimestamp()});await setDoc(doc(db,'households',hid,'members',uid),{uid,joinedAt:serverTimestamp()});let legacyItems=(await getDocs(ownItems())).docs,legacyShops=(await getDocs(ownShops())).docs;let all=[...legacyItems.map(d=>({ref:doc(db,'households',hid,'items',d.id),data:d.data()})),...legacyShops.map(d=>({ref:doc(db,'households',hid,'shops',d.id),data:d.data()}))];for(let i=0;i<all.length;i+=200){let batch=writeBatch(db);all.slice(i,i+200).forEach(v=>batch.set(v.ref,v.data));await batch.commit()}await setDoc(doc(db,'users',uid,'profile','settings'),{householdId:hid,updatedAt:serverTimestamp()});alert(`共有グループを作成し、商品${legacyItems.length}件・購入先${legacyShops.length}件をコピーしました。元データも残っています。`);await start()}catch(e){alert('移行が完了していません：'+e.message+'\n元データは削除されていません。繰り返し作成せず、状況を確認してください。')}}
-async function inviteModal(){if(house?.ownerUid!==uid)return alert('招待コードの発行はオーナーのみです');let c=code();try{await setDoc(doc(db,'invites',c),{householdId:houseId,ownerUid:uid,createdAt:serverTimestamp()});open(`<h2>招待コード</h2><p class="sub">相手にこのコードを渡してください。コードだけでは共有データは見られず、あなたの承認が必要です。</p><div class="panel wrap" id="inviteCode">${c}</div><button class="wide" id="copyCode">コードをコピー</button><button class="outline" id="closeModal">閉じる</button>`);$('copyCode').onclick=()=>navigator.clipboard?.writeText(c).then(()=>alert('コピーしました')).catch(()=>alert('コードを長押ししてコピーしてください'));$('closeModal').onclick=close}catch(e){alert(e.message)}}
-function joinModal(){open(`<h2>参加申請</h2><p class="sub">相手から受け取った32文字の招待コードを入力。オーナーが承認すると共有が始まります。</p><input class="field" id="inviteInput" placeholder="招待コード"><button class="wide" id="requestJoin">参加を申請する</button><button class="outline" id="closeModal">閉じる</button>`);$('closeModal').onclick=close;$('requestJoin').onclick=async()=>{if(!auth.currentUser?.email)return alert('先にメール・パスワードを登録してください');let c=$('inviteInput').value.trim().toLowerCase();if(!/^[0-9a-f]{32}$/.test(c))return alert('32文字のコードを入力してください');try{let inv=await getDoc(doc(db,'invites',c));if(!inv.exists())return alert('招待コードが見つかりません');let hid=inv.data().householdId;await setDoc(doc(db,'households',hid,'requests',uid),{uid,inviteCode:c,requestedAt:serverTimestamp()});await setDoc(doc(db,'users',uid,'joinPointers',hid),{requestedAt:serverTimestamp()});close();alert('申請しました。相手にマイページから承認してもらってください。承認後、マイページを開き直してください。')}catch(e){alert('申請できません：'+e.message)}}}
-function approveModal(){open(`<h2>参加申請</h2>${requests.map(r=>`<div class="panel"><div class="wrap">${esc(r.uid)}</div><button class="wide" data-approve="${r.uid}">承認する</button></div>`).join('')||'<p>申請はありません</p>'}<button class="outline" id="closeModal">閉じる</button>`);$('closeModal').onclick=close;document.querySelectorAll('[data-approve]').forEach(b=>b.onclick=async()=>{let target=b.dataset.approve;if(!confirm('このユーザーを共有グループに参加させますか？'))return;try{await setDoc(doc(db,'households',houseId,'members',target),{uid:target,joinedAt:serverTimestamp()});await deleteDoc(doc(db,'households',houseId,'requests',target));close();alert('承認しました。相手はマイページの「共有を確認」を押してください。')}catch(e){alert(e.message)}})}
-async function checkMembership(){if(houseId)return;try{let reqs=await getDocs(collection(db,'users',uid,'joinPointers'));for(let r of reqs.docs){let hid=r.id,m=await getDoc(doc(db,'households',hid,'members',uid));if(m.exists()){await setDoc(doc(db,'users',uid,'profile','settings'),{householdId:hid,updatedAt:serverTimestamp()});await start();return}}alert('まだ承認されていないか、申請がありません')}catch(e){alert(e.message)}}
-async function start(){clean();requestsWatching=false;items=[];shops=[];history=[];requests=[];members=[];house=null;houseId=null;let settings=await getDoc(doc(db,'users',uid,'profile','settings'));let hid=settings.exists()?settings.data().householdId:null;if(hid){let m=await getDoc(doc(db,'households',hid,'members',uid));if(m.exists())houseId=hid}if(houseId){watch(doc(db,'households',houseId),s=>{house=s.data();if(house?.ownerUid===uid&&!requestsWatching){requestsWatching=true;watch(collection(db,'households',houseId,'requests'),r=>{requests=r.docs.map(d=>d.data());render()})}render()});watch(collection(db,'households',houseId,'members'),s=>{members=s.docs.map(d=>d.data());render()});}watch(histRef(),s=>{history=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.purchasedAt?.seconds||0)-(a.purchasedAt?.seconds||0));render()});watch(shopsRef(),s=>{shops=s.docs.map(d=>({id:d.id,...d.data()}));render();msg('接続済み')});watch(itemsRef(),s=>{items=s.docs.map(d=>({id:d.id,...d.data()}));render();msg('接続済み')});render()}
-$('modal').onclick=e=>{if(e.target===$('modal'))close()};$('addBtn').onclick=()=>addModal();document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render()});onAuthStateChanged(auth,async user=>{clean();uid=user?.uid||null;if(!uid){msg('認証中…');try{await signInAnonymously(auth)}catch(e){msg('認証失敗');alert(e.message)}return}try{await start()}catch(e){msg('読み込み失敗');alert(e.message)}});
-</script></body></html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+
+/* JSONバックアップ */
+function backup(){
+  let obj={
+    format:'FutariShopping-backup-v2',
+    exportedAt:new Date().toISOString(),
+    uid,
+    houseId,
+    shops,
+    items,
+    history
+  };
+
+  let data=JSON.stringify(obj,(k,v)=>
+    v&&typeof v==='object'&&typeof v.toDate==='function'
+      ?{seconds:v.seconds,nanoseconds:v.nanoseconds}
+      :v
+  ,2);
+
+  let url=URL.createObjectURL(
+    new Blob([data],{type:'application/json'})
+  );
+
+  let a=document.createElement('a');
+  a.href=url;
+  a.download='FutariShopping-backup-'+
+    new Date().toISOString().slice(0,10)+'.json';
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+
+/* マイページ */
+function profile(){
+  let user=auth.currentUser;
+  let email=user?.email||'';
+
+  $('content').innerHTML=`
+    <div class="panel">
+      <h3>データ保護</h3>
+
+      <p class="sub">
+        ${houseId?'🏠 共有グループで同期中':'📱 個人データで使用中'}
+        · ${email?'メール認証済み':'匿名ログイン'}
+      </p>
+
+      <p class="sub wrap">
+        ユーザーID：${esc(uid)}
+      </p>
+
+      <button class="wide" id="backup">
+        JSONバックアップを保存
+      </button>
+
+      <p class="notice">
+        移行前にバックアップを保存してください。
+        古いホーム画面アイコンやSafariのサイトデータは、
+        移行完了まで削除しないでください。
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>アカウント</h3>
+
+      ${email?`
+        <p class="sub">${esc(email)}</p>
+      `:`
+        <p class="sub">
+          メール・パスワードを紐付けると、
+          同じユーザーIDを維持したまま復旧可能になります。
+        </p>
+
+        <button class="wide" id="linkEmail">
+          メールとパスワードを登録
+        </button>
+      `}
+
+      <button class="outline" id="loginEmail">
+        既存アカウントでログイン
+      </button>
+    </div>
+
+    <div class="panel">
+      <h3>2人で共有</h3>
+
+      ${houseId?`
+        <p>
+          共有グループID：
+          <span class="wrap">${esc(houseId)}</span>
+        </p>
+
+        <p class="sub">
+          参加者 ${members.length}人
+        </p>
+
+        <button class="wide" id="invite">
+          招待コードを表示・更新
+        </button>
+
+        ${house?.ownerUid===uid?`
+          <button class="outline" id="approve">
+            参加申請 ${requests.length}件
+          </button>
+        `:''}
+      `:`
+        <p class="sub">
+          共有グループを作成して既存データをコピーするか、
+          招待コードから参加できます。
+        </p>
+
+        <button class="wide" id="createHouse">
+          共有グループを作成・移行
+        </button>
+
+        <button class="outline" id="joinHouse">
+          招待コードで参加申請
+        </button>
+
+        <button class="outline" id="checkMember">
+          共有を確認
+        </button>
+      `}
+    </div>
+
+    <div class="panel">
+      <h3>購入先の管理</h3>
+
+      <button class="wide" id="manageShops">
+        購入先を追加・編集・並び替え
+      </button>
+    </div>
+  `;
+
+  $('backup').onclick=backup;
+  $('manageShops').onclick=()=>shopModal();
+  $('loginEmail').onclick=loginModal;
+
+  if($('linkEmail')){
+    $('linkEmail').onclick=linkModal;
+  }
+
+  if($('createHouse')){
+    $('createHouse').onclick=createHouse;
+  }
+
+  if($('joinHouse')){
+    $('joinHouse').onclick=joinModal;
+  }
+
+  if($('checkMember')){
+    $('checkMember').onclick=checkMembership;
+  }
+
+  if($('invite')){
+    $('invite').onclick=inviteModal;
+  }
+
+  if($('approve')){
+    $('approve').onclick=approveModal;
+  }
+}
+
+/* メール・パスワードを紐付け */
+function linkModal(){
+  open(`
+    <h2>アカウントを保護</h2>
+
+    <p class="notice">
+      現在の匿名ユーザーにメールを紐付けます。
+      新規ログインではありません。
+    </p>
+
+    <input class="field" id="email"
+      type="email" placeholder="メールアドレス">
+
+    <input class="field" id="pass"
+      type="password" placeholder="パスワード（6文字以上）">
+
+    <button class="wide" id="doLink">
+      登録する
+    </button>
+
+    <button class="outline" id="cancel">
+      閉じる
+    </button>
+  `);
+
+  $('cancel').onclick=close;
+
+  $('doLink').onclick=async()=>{
+    try{
+      let cred=EmailAuthProvider.credential(
+        $('email').value.trim(),
+        $('pass').value
+      );
+
+      await linkWithCredential(auth.currentUser,cred);
+
+      close();
+      render();
+      alert('アカウントを保護しました');
+    }catch(e){
+      alert('登録失敗：'+e.message);
+    }
+  };
+}
+
+/* 既存アカウントでログイン */
+function loginModal(){
+  open(`
+    <h2>既存アカウントでログイン</h2>
+
+    <p class="notice">
+      ログインすると現在の匿名ユーザーから切り替わります。
+      匿名データがある場合は、
+      先にバックアップ・メール紐付けしてください。
+    </p>
+
+    <input class="field" id="email"
+      type="email" placeholder="メールアドレス">
+
+    <input class="field" id="pass"
+      type="password" placeholder="パスワード">
+
+    <button class="wide" id="doLogin">
+      ログイン
+    </button>
+
+    <button class="outline" id="cancel">
+      閉じる
+    </button>
+  `);
+
+  $('cancel').onclick=close;
+
+  $('doLogin').onclick=async()=>{
+    if(!confirm(
+      '現在のユーザーから切り替えます。バックアップ済みですか？'
+    ))return;
+
+    try{
+      await signInWithEmailAndPassword(
+        auth,
+        $('email').value.trim(),
+        $('pass').value
+      );
+
+      close();
+    }catch(e){
+      alert(e.message);
+    }
+  };
+}
+
+/* 安全な招待コード生成 */
+function code(){
+  let b=new Uint8Array(16);
+  crypto.getRandomValues(b);
+
+  return Array.from(b,x=>
+    x.toString(16).padStart(2,'0')
+  ).join('');
+}
+
+/* 共有グループ作成 */
+async function createHouse(){
+  if(!auth.currentUser?.email){
+    return alert(
+      '先にメール・パスワードを登録してください'
+    );
+  }
+
+  if(!confirm(
+    '最初にJSONバックアップを保存しましたか？\n'+
+    '元データは削除せず、共有グループへコピーします。'
+  ))return;
+
+  let hid=doc(collection(db,'households')).id;
+
+  try{
+    await setDoc(doc(db,'households',hid),{
+      ownerUid:uid,
+      createdAt:serverTimestamp()
+    });
+
+    await setDoc(
+      doc(db,'households',hid,'members',uid),
+      {
+        uid,
+        joinedAt:serverTimestamp()
+      }
+    );
+
+    let legacyItems=(await getDocs(ownItems())).docs;
+    let legacyShops=(await getDocs(ownShops())).docs;
+
+    let all=[
+      ...legacyItems.map(d=>({
+        ref:doc(db,'households',hid,'items',d.id),
+        data:d.data()
+      })),
+      ...legacyShops.map(d=>({
+        ref:doc(db,'households',hid,'shops',d.id),
+        data:d.data()
+      }))
+    ];
+
+    for(let i=0;i<all.length;i+=200){
+      let batch=writeBatch(db);
+
+      all.slice(i,i+200).forEach(v=>
+        batch.set(v.ref,v.data)
+      );
+
+      await batch.commit();
+    }
+
+    await setDoc(
+      doc(db,'users',uid,'profile','settings'),
+      {
+        householdId:hid,
+        updatedAt:serverTimestamp()
+      }
+    );
+
+    alert(
+      `共有グループを作成し、商品${legacyItems.length}件・`+
+      `購入先${legacyShops.length}件をコピーしました。`+
+      '元データも残っています。'
+    );
+
+    await start();
+  }catch(e){
+    alert(
+      '移行が完了していません：'+e.message+
+      '\n元データは削除されていません。'+
+      '繰り返し作成せず、状況を確認してください。'
+    );
+  }
+}
+
+/* 招待コード発行 */
+async function inviteModal(){
+  if(house?.ownerUid!==uid){
+    return alert('招待コードの発行はオーナーのみです');
+  }
+
+  let c=code();
+
+  try{
+    await setDoc(doc(db,'invites',c),{
+      householdId:houseId,
+      ownerUid:uid,
+      createdAt:serverTimestamp()
+    });
+
+    open(`
+      <h2>招待コード</h2>
+
+      <p class="sub">
+        相手にこのコードを渡してください。
+        コードだけでは共有データは見られず、
+        あなたの承認が必要です。
+      </p>
+
+      <div class="panel wrap" id="inviteCode">
+        ${c}
+      </div>
+
+      <button class="wide" id="copyCode">
+        コードをコピー
+      </button>
+
+      <button class="outline" id="closeModal">
+        閉じる
+      </button>
+    `);
+
+    $('copyCode').onclick=()=>{
+      navigator.clipboard?.writeText(c)
+        .then(()=>alert('コピーしました'))
+        .catch(()=>alert(
+          'コードを長押ししてコピーしてください'
+        ));
+    };
+
+    $('closeModal').onclick=close;
+  }catch(e){
+    alert(e.message);
+  }
+}
+
+/* 共有参加申請 */
+function joinModal(){
+  open(`
+    <h2>参加申請</h2>
+
+    <p class="sub">
+      相手から受け取った32文字の招待コードを入力。
+      オーナーが承認すると共有が始まります。
+    </p>
+
+    <input class="field" id="inviteInput"
+      placeholder="招待コード">
+
+    <button class="wide" id="requestJoin">
+      参加を申請する
+    </button>
+
+    <button class="outline" id="closeModal">
+      閉じる
+    </button>
+  `);
+
+  $('closeModal').onclick=close;
+
+  $('requestJoin').onclick=async()=>{
+    if(!auth.currentUser?.email){
+      return alert(
+        '先にメール・パスワードを登録してください'
+      );
+    }
+
+    let c=$('inviteInput').value.trim().toLowerCase();
+
+    if(!/^[0-9a-f]{32}$/.test(c)){
+      return alert('32文字のコードを入力してください');
+    }
+
+    try{
+      let inv=await getDoc(doc(db,'invites',c));
+
+      if(!inv.exists()){
+        return alert('招待コードが見つかりません');
+      }
+
+      let hid=inv.data().householdId;
+
+      await setDoc(
+        doc(db,'households',hid,'requests',uid),
+        {
+          uid,
+          inviteCode:c,
+          requestedAt:serverTimestamp()
+        }
+      );
+
+      await setDoc(
+        doc(db,'users',uid,'joinPointers',hid),
+        {
+          requestedAt:serverTimestamp()
+        }
+      );
+
+      close();
+
+      alert(
+        '申請しました。相手にマイページから'+
+        '承認してもらってください。'+
+        '承認後、マイページを開き直してください。'
+      );
+    }catch(e){
+      alert('申請できません：'+e.message);
+    }
+  };
+}
+
+/* 参加申請の承認 */
+function approveModal(){
+  open(`
+    <h2>参加申請</h2>
+
+    ${requests.map(r=>`
+      <div class="panel">
+        <div class="wrap">${esc(r.uid)}</div>
+
+        <button class="wide"
+          data-approve="${r.uid}">
+          承認する
+        </button>
+      </div>
+    `).join('')||'<p>申請はありません</p>'}
+
+    <button class="outline" id="closeModal">
+      閉じる
+    </button>
+  `);
+
+  $('closeModal').onclick=close;
+
+  document.querySelectorAll('[data-approve]').forEach(b=>{
+    b.onclick=async()=>{
+      let target=b.dataset.approve;
+
+      if(!confirm(
+        'このユーザーを共有グループに参加させますか？'
+      ))return;
+
+      try{
+        await setDoc(
+          doc(db,'households',houseId,'members',target),
+          {
+            uid:target,
+            joinedAt:serverTimestamp()
+          }
+        );
+
+        await deleteDoc(
+          doc(db,'households',houseId,'requests',target)
+        );
+
+        close();
+
+        alert(
+          '承認しました。相手はマイページの'+
+          '「共有を確認」を押してください。'
+        );
+      }catch(e){
+        alert(e.message);
+      }
+    };
+  });
+}
+
+/* 共有参加状況を確認 */
+async function checkMembership(){
+  if(houseId)return;
+
+  try{
+    let reqs=await getDocs(
+      collection(db,'users',uid,'joinPointers')
+    );
+
+    for(let r of reqs.docs){
+      let hid=r.id;
+
+      let m=await getDoc(
+        doc(db,'households',hid,'members',uid)
+      );
+
+      if(m.exists()){
+        await setDoc(
+          doc(db,'users',uid,'profile','settings'),
+          {
+            householdId:hid,
+            updatedAt:serverTimestamp()
+          }
+        );
+
+        await start();
+        return;
+      }
+    }
+
+    alert('まだ承認されていないか、申請がありません');
+  }catch(e){
+    alert(e.message);
+  }
+}
+
+/* Firebaseからリアルタイム同期 */
+async function start(){
+  clean();
+
+  requestsWatching=false;
+  items=[];
+  shops=[];
+  history=[];
+  requests=[];
+  members=[];
+  house=null;
+  houseId=null;
+
+  let settings=await getDoc(
+    doc(db,'users',uid,'profile','settings')
+  );
+
+  let hid=settings.exists()
+    ?settings.data().householdId
+    :null;
+
+  if(hid){
+    let m=await getDoc(
+      doc(db,'households',hid,'members',uid)
+    );
+
+    if(m.exists()){
+      houseId=hid;
+    }
+  }
+
+  if(houseId){
+    watch(doc(db,'households',houseId),s=>{
+      house=s.data();
+
+      if(house?.ownerUid===uid&&!requestsWatching){
+        requestsWatching=true;
+
+        watch(
+          collection(db,'households',houseId,'requests'),
+          r=>{
+            requests=r.docs.map(d=>d.data());
+            render();
+          }
+        );
+      }
+
+      render();
+    });
+
+    watch(
+      collection(db,'households',houseId,'members'),
+      s=>{
+        members=s.docs.map(d=>d.data());
+        render();
+      }
+    );
+  }
+
+  watch(histRef(),s=>{
+    history=s.docs.map(d=>({
+      id:d.id,
+      ...d.data()
+    })).sort((a,b)=>
+      (b.purchasedAt?.seconds||0)-
+      (a.purchasedAt?.seconds||0)
+    );
+
+    render();
+  });
+
+  watch(shopsRef(),s=>{
+    shops=s.docs.map(d=>({
+      id:d.id,
+      ...d.data()
+    }));
+
+    render();
+    msg('接続済み');
+  });
+
+  watch(itemsRef(),s=>{
+    items=s.docs.map(d=>({
+      id:d.id,
+      ...d.data()
+    }));
+
+    render();
+    msg('接続済み');
+  });
+
+  render();
+}
+
+/* 画面操作 */
+$('modal').onclick=e=>{
+  if(e.target===$('modal'))close();
+};
+
+$('addBtn').onclick=()=>addModal();
+
+document.querySelectorAll('.nav button').forEach(b=>{
+  b.onclick=()=>{
+    tab=b.dataset.tab;
+    render();
+  };
+});
+
+/* Firebase認証・アプリ起動 */
+onAuthStateChanged(auth,async user=>{
+  clean();
+  uid=user?.uid||null;
+
+  if(!uid){
+    msg('認証中…');
+
+    try{
+      await signInAnonymously(auth);
+    }catch(e){
+      msg('認証失敗');
+      alert(e.message);
+    }
+
+    return;
+  }
+
+  try{
+    await start();
+  }catch(e){
+    msg('読み込み失敗');
+    alert(e.message);
+  }
+});
+</script>
+</body>
+</html>

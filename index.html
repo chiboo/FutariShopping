@@ -60,7 +60,132 @@ function bindHistoryAgain(closeAfter=true){document.querySelectorAll('[data-agai
 function editItem(id){let x=items.find(v=>v.id===id);if(!x)return;open(`<div class="row"><h2>商品を編集</h2><button class="outline" id="closeModal">閉じる</button></div><label>購入先</label><select class="field" id="editShop">${[...new Set(['未設定',...uniqueShops(),x.shop||'未設定'])].map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}</select><label>商品名</label><input class="field" id="editName" maxlength="100"><label>メモ</label><input class="field" id="editMemo" maxlength="200"><label>数量</label><input class="field" type="number" id="editQty" min="1" max="9999" value="1">${x.regular?'<label>購入周期（日）</label><input class="field" type="number" id="editCycle" min="1" max="3650">':''}<button class="wide" id="saveEdit">変更を保存</button>`);$('closeModal').onclick=close;$('editShop').value=x.shop||'未設定';$('editName').value=x.name;$('editMemo').value=x.memo||'';$('editQty').value=qty(x);if(x.regular)$('editCycle').value=x.cycle??'';$('saveEdit').onclick=async()=>{let name=$('editName').value.trim(),shop=$('editShop').value,memo=$('editMemo').value.trim();let quantity=Number($('editQty').value);if(!Number.isInteger(quantity)||quantity<1||quantity>9999)return alert('数量は1〜9999で入力してね');let cycle=x.regular?(Number($('editCycle').value)||null):null;if(!name)return alert('商品名を入力してね');if(cycle!==null&&(!Number.isInteger(cycle)||cycle<1||cycle>3650))return alert('周期は1〜3650日');$('saveEdit').disabled=true;try{await updateDoc(doc(itemsRef(),id),{name,shop,memo,cycle,quantity,updatedAt:serverTimestamp()});close()}catch(e){alert('編集できませんでした：'+e.message)}finally{$('saveEdit')?.removeAttribute('disabled')}}}
 function historyModal(){open(`<div class="row"><h2>購入履歴</h2><button class="outline" id="closeModal">閉じる</button></div>${history.map(x=>`<div class="item"><div class="name">${esc(x.name)}<div class="tiny">${esc(x.shop)} · ${dateText(x.purchasedAt)}</div></div><button class="outline mini" data-again="${x.id}">再追加</button></div>`).join('')||'<p class="sub">まだ購入履歴がありません</p>'}`);$('closeModal').onclick=close;document.querySelectorAll('[data-again]').forEach(b=>b.onclick=async()=>{let x=history.find(v=>v.id===b.dataset.again);try{await addDoc(itemsRef(),{name:x.name,shop:x.shop||'未設定',memo:x.memo||'',done:false,regular:false,cycle:null,quantity:qty(x),order:Date.now(),createdAt:serverTimestamp()});close();tab='list';render()}catch(e){alert(e.message)}})}
 function addModal(regular=false){open(`<div class="row"><h2>${regular?'定期購入品を登録':'入力して追加'}</h2><button class="outline" id="closeModal">閉じる</button></div><label>購入先</label><select class="field" id="newShop">${['未設定',...uniqueShops()].map(s=>`<option>${esc(s)}</option>`).join('')}</select><button class="outline" id="shopManage">＋ 購入先を追加</button><label>商品名</label><input class="field" id="newName" maxlength="100" placeholder="例：牛乳"><label>メモ（任意）</label><input class="field" id="newMemo" maxlength="200"><label>数量</label><input class="field" type="number" id="newQty" min="1" max="9999" value="1">${regular?'<label>購入周期（日）</label><input class="field" id="newCycle" type="number" min="1" max="3650" placeholder="例：60">':''}<button class="wide" id="saveItem">追加する</button>`);$('closeModal').onclick=close;$('shopManage').onclick=()=>shopModal(true,regular);$('saveItem').onclick=async()=>{let name=$('newName').value.trim(),shop=$('newShop').value,memo=$('newMemo').value.trim(),cycle=regular?(Number($('newCycle').value)||null):null,quantity=Number($('newQty').value);if(!Number.isInteger(quantity)||quantity<1||quantity>9999)return alert('数量は1〜9999で入力してね');if(!name)return alert('商品名を入力してね');if(cycle!==null&&(cycle<1||cycle>3650||!Number.isInteger(cycle)))return alert('周期は1〜3650日の整数にしてね');if(busy)return;busy=true;$('saveItem').disabled=true;try{await addDoc(itemsRef(),{name,shop,memo,done:false,regular,cycle,quantity,order:Date.now(),createdAt:serverTimestamp()});close()}catch(e){alert('保存できませんでした：'+e.message)}finally{busy=false}}}
-function shopModal(fromAdd=false,regular=false){let names=uniqueShops();open(`<div class="row"><h2>購入先を管理</h2><button class="outline" id="closeModal">閉じる</button></div><div class="row"><input class="field" id="shopInput" maxlength="40" placeholder="例：業務スーパー"><button class="outline" id="saveShop">追加</button></div>${names.map(s=>{let c=shops.find(x=>x.name===s);return `<div class="shopline"><span>${esc(s)}</span>${c?`<button class="outline mini" data-rename="${c.id}">変更</button><button class="delete" data-shop-del="${c.id}">×</button>`:'<span class="badge">初期設定</span>'}</div>`}).join('')}`);$('closeModal').onclick=()=>{close();if(fromAdd)addModal(regular)};$('saveShop').onclick=async()=>{let name=$('shopInput').value.trim();if(!name||names.includes(name))return alert('未入力または登録済みです');try{await addDoc(shopsRef(),{name,createdAt:serverTimestamp()});shopModal(fromAdd,regular)}catch(e){alert(e.message)}};document.querySelectorAll('[data-rename]').forEach(b=>b.onclick=async()=>{let s=shops.find(x=>x.id===b.dataset.rename),name=prompt('新しい購入先',s.name)?.trim();if(!name||names.includes(name))return;try{await updateDoc(doc(shopsRef(),s.id),{name});shopModal(fromAdd,regular)}catch(e){alert(e.message)}});document.querySelectorAll('[data-shop-del]').forEach(b=>b.onclick=async()=>{if(!confirm('購入先を削除しますか？'))return;try{await deleteDoc(doc(shopsRef(),b.dataset.shopDel));shopModal(fromAdd,regular)}catch(e){alert(e.message)}})}
+function shopModal(fromAdd=false,regular=false){
+  let names=uniqueShops();
+
+  open(`
+    <div class="row">
+      <h2>購入先を管理</h2>
+      <button class="outline" id="closeModal">閉じる</button>
+    </div>
+
+    <p class="sub">↑ ↓ で購入先の表示順を変更できます。</p>
+
+    <div class="row">
+      <input class="field" id="shopInput"
+        maxlength="40" placeholder="例：業務スーパー">
+      <button class="outline" id="saveShop">追加</button>
+    </div>
+
+    ${names.map((name,i)=>{
+      const s=shops.find(x=>x.name===name);
+      return `
+        <div class="shopline">
+          <span>${esc(name)}</span>
+          <button class="outline mini"
+            data-shop-move="${i}" data-dir="-1"
+            ${i===0?'disabled':''}>↑</button>
+          <button class="outline mini"
+            data-shop-move="${i}" data-dir="1"
+            ${i===names.length-1?'disabled':''}>↓</button>
+          ${s?`
+            <button class="outline mini"
+              data-rename="${s.id}">変更</button>
+            <button class="delete"
+              data-shop-del="${s.id}">×</button>
+          `:'<span class="badge">初期設定</span>'}
+        </div>
+      `;
+    }).join('')}
+  `);
+
+  $('closeModal').onclick=()=>{
+    close();
+    if(fromAdd)addModal(regular);
+  };
+
+  $('saveShop').onclick=async()=>{
+    let name=$('shopInput').value.trim();
+    if(!name||names.includes(name)){
+      alert('未入力または登録済みです');
+      return;
+    }
+    try{
+      await addDoc(shopsRef(),{
+        name,
+        order:names.length,
+        createdAt:serverTimestamp()
+      });
+      shopModal(fromAdd,regular);
+    }catch(e){alert(e.message)}
+  };
+
+  document.querySelectorAll('[data-shop-move]').forEach(b=>{
+    b.onclick=async()=>{
+      let i=Number(b.dataset.shopMove);
+      let j=i+Number(b.dataset.dir);
+      if(j<0||j>=names.length)return;
+
+      let reordered=[...names];
+      [reordered[i],reordered[j]]=
+        [reordered[j],reordered[i]];
+
+      b.disabled=true;
+
+      try{
+        let batch=writeBatch(db);
+
+        for(let k=0;k<reordered.length;k++){
+          let name=reordered[k];
+          let s=shops.find(x=>x.name===name);
+
+          if(s){
+            batch.update(doc(shopsRef(),s.id),{
+              order:k
+            });
+          }else{
+            let ref=doc(shopsRef());
+            batch.set(ref,{
+              name,
+              order:k,
+              createdAt:serverTimestamp()
+            });
+          }
+        }
+
+        await batch.commit();
+        shopModal(fromAdd,regular);
+      }catch(e){
+        alert('並び替え失敗：'+e.message);
+        b.disabled=false;
+      }
+    };
+  });
+
+  document.querySelectorAll('[data-rename]').forEach(b=>{
+    b.onclick=async()=>{
+      let s=shops.find(x=>x.id===b.dataset.rename);
+      let name=prompt('新しい購入先',s.name)?.trim();
+      if(!name||names.includes(name))return;
+
+      try{
+        await updateDoc(doc(shopsRef(),s.id),{name});
+        shopModal(fromAdd,regular);
+      }catch(e){alert(e.message)}
+    };
+  });
+
+  document.querySelectorAll('[data-shop-del]').forEach(b=>{
+    b.onclick=async()=>{
+      if(!confirm('購入先を削除しますか？'))return;
+
+      try{
+        await deleteDoc(doc(shopsRef(),b.dataset.shopDel));
+        shopModal(fromAdd,regular);
+      }catch(e){alert(e.message)}
+    };
+  });
+}
 function backup(){let obj={format:'FutariShopping-backup-v2',exportedAt:new Date().toISOString(),uid,houseId,shops,items,history};let data=JSON.stringify(obj,(k,v)=>v&&typeof v==='object'&&typeof v.toDate==='function'?{seconds:v.seconds,nanoseconds:v.nanoseconds}:v,2);let url=URL.createObjectURL(new Blob([data],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='FutariShopping-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
 function profile(){let user=auth.currentUser;let email=user?.email||'';$('content').innerHTML=`<div class="panel"><h3>データ保護</h3><p class="sub">${houseId?'🏠 共有グループで同期中':'📱 個人データで使用中'} · ${email?'メール認証済み':'匿名ログイン'}</p><p class="sub wrap">ユーザーID：${esc(uid)}</p><button class="wide" id="backup">JSONバックアップを保存</button><p class="notice">移行前に必ずバックアップを保存してください。古いホーム画面アイコンやSafariのサイトデータは、移行完了まで削除しないでください。</p></div><div class="panel"><h3>アカウント</h3>${email?`<p class="sub">${esc(email)}</p>`:`<p class="sub">メール・パスワードを紐付けると、同じユーザーIDを維持したまま復旧可能になります。</p><button class="wide" id="linkEmail">メールとパスワードを登録</button>`}<button class="outline" id="loginEmail">既存アカウントでログイン</button></div><div class="panel"><h3>2人で共有</h3>${houseId?`<p>共有グループID：<span class="wrap">${esc(houseId)}</span></p><p class="sub">参加者 ${members.length}人</p><button class="wide" id="invite">招待コードを表示・更新</button>${house?.ownerUid===uid?`<button class="outline" id="approve">参加申請 ${requests.length}件</button>`:''}`:`<p class="sub">共有グループを作成して既存データをコピーするか、招待コードから参加できます。</p><button class="wide" id="createHouse">共有グループを作成・移行</button><button class="outline" id="joinHouse">招待コードで参加申請</button><button class="outline" id="checkMember">共有を確認</button>`}</div><div class="panel"><h3>購入先の管理</h3><button class="wide" id="manageShops">購入先を追加・編集</button></div>`;$('backup').onclick=backup;$('manageShops').onclick=()=>shopModal();$('loginEmail').onclick=loginModal;if($('linkEmail'))$('linkEmail').onclick=linkModal;if($('createHouse'))$('createHouse').onclick=createHouse;if($('joinHouse'))$('joinHouse').onclick=joinModal;if($('checkMember'))$('checkMember').onclick=checkMembership;if($('invite'))$('invite').onclick=inviteModal;if($('approve'))$('approve').onclick=approveModal}
 function linkModal(){open(`<h2>アカウントを保護</h2><p class="notice">現在の匿名ユーザーにメールを紐付けます。新規ログインではありません。</p><input class="field" id="email" type="email" placeholder="メールアドレス"><input class="field" id="pass" type="password" placeholder="パスワード（6文字以上）"><button class="wide" id="doLink">登録する</button><button class="outline" id="cancel">閉じる</button>`);$('cancel').onclick=close;$('doLink').onclick=async()=>{try{let cred=EmailAuthProvider.credential($('email').value.trim(),$('pass').value);await linkWithCredential(auth.currentUser,cred);close();render();alert('アカウントを保護しました')}catch(e){alert('登録失敗：'+e.message)}}}

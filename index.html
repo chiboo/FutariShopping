@@ -146,13 +146,12 @@ function shopModal(fromAdd=false,regular=false){
           }else{
             let ref=doc(shopsRef());
             batch.set(ref,{
-              name,
+              name:name,
               order:k,
               createdAt:serverTimestamp()
             });
           }
         }
-
         await batch.commit();
         shopModal(fromAdd,regular);
       }catch(e){
